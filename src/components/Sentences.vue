@@ -1,13 +1,25 @@
 <template>
   <button v-on:click="toggleEditMode">{{ editMode ? "Done" : "Edit" }}</button>
   <ul>
-    <li v-for="(obj, index) in grammarList" :key="`obj-${index}`">
-      {{ Object.keys(obj)[0]
-      }}<a href="#" v-show="editMode" v-on:click="remove(obj)">[x]</a>
+    <li
+      v-for="(grammarListObj, index) in grammarList"
+      :key="`grammarListObj-${index}`"
+    >
+      {{ Object.keys(grammarListObj)[0] }}
+      <a href="#" v-show="editMode" v-on:click="remove(grammarListObj)">[x]</a>
       <ul>
-        <li v-for="(sentence, index) in Object.values(obj)[0]" :key="`sentence-${index}`">
-          <div>{{ sentence }}</div>
-          <a href="#" v-show="editMode" v-on:click="clear(obj, sentence)"
+        <li
+          v-for="(sentence, index) in Object.values(grammarListObj)[0]"
+          :key="`sentence-${index}`"
+        >
+          <div>
+            {{ sentence[0] }} <span class="grammarPoint">{{ sentence[1] }}</span
+            >{{ sentence[2] }}
+          </div>
+          <a
+            href="#"
+            v-show="editMode"
+            v-on:click="clear(grammarListObj, sentence)"
             >[x]</a
           >
         </li>
@@ -35,8 +47,20 @@
     {{ showAll ? "Hide All Sentences" : "Show All Sentences" }}
   </button>
   <ul>
-    <li v-for="(sentence, index) in allSentences" v-show="showAll" :key="`s-${index}`">
-      <div>{{ sentence }}</div>
+    <li
+      v-for="(sentence, index) in allSentences"
+      v-show="showAll"
+      :key="`s-${index}`"
+    >
+      <div>
+        <a
+          href="#"
+          v-show="editMode"
+          v-on:click="clear(grammarListObj, sentence)"
+          >[x]</a
+        >
+        {{ sentence }}
+      </div>
     </li>
   </ul>
 </template>
@@ -45,21 +69,22 @@
 export default {
   name: "Sentences",
   data() {
-      return{
-    editMode: false,
-    findMode: true,
-    showAll: true,
-    grammarList: [{ 恐らく: [] }, { に際して: [] }],
-    allSentences: [],
-      }
+    return {
+      editMode: false,
+      findMode: true,
+      showAll: true,
+      grammarList: [{ 恐らく: [] }, { に際して: [] }],
+      allSentences: [],
+    };
   },
   methods: {
     findGrammar: function (event) {
       let sentence = event.target.value;
-      let grammar = this.searchGrammar(sentence);
-      grammar.length < 1
+      let grammarObject = this.searchGrammar(sentence);
+      console.log(grammarObject);
+      grammarObject.grammar.length < 1
         ? "Nothing found"
-        : this.addSentence(grammar, sentence);
+        : this.addSentence(grammarObject);
       event.target.value = "";
       this.save();
     },
@@ -72,12 +97,12 @@ export default {
       });
       if (isUnique) array.push(sentence);
     },
-    addSentence: function (grammar, sentence) {
-      grammar.forEach((g) => {
+    addSentence: function (grammarObject) {
+      grammarObject.grammar.forEach((g) => {
         this.grammarList.forEach((obj) => {
           if (Object.keys(obj)[0] == g) {
-            this.updateSentence(Object.values(obj)[0], sentence);
-            this.updateSentence(this.allSentences, sentence);
+            this.updateSentence(Object.values(obj)[0], grammarObject.breakdown);
+            this.updateSentence(this.allSentences, grammarObject.sentence);
           }
         });
       });
@@ -95,18 +120,30 @@ export default {
       this.save();
     },
     searchGrammar: function (s) {
-      let output = [];
+      let object = {
+        grammar: [],
+        sentence: "",
+        breakdown: [],
+      };
       this.getGrammar(this.grammarList).forEach((item) => {
         let result = [];
-        let grammar = item.split("～");
+        let part = [];
+        let grammar = item.split("～"); // for grammar points written as "A~B"
         grammar.forEach((grammarPart) => {
           let found = s.search(grammarPart);
           if (found > -1)
-            result.push(s.substring(found, found + Element.length));
+            result.push(s.substring(found, found + grammarPart.length));
+          part.push(s.substring(0, found));
+          part.push(s.substring(found, found + grammarPart.length));
+          part.push(s.substring(found + grammarPart.length));
         });
-        if (result.length === grammar.length) output.push(item);
+        if (result.length === grammar.length) {
+          object.grammar.push(item);
+          object.sentence += s;
+          object.breakdown = part;
+        }
       });
-      return output;
+      return object;
     },
     remove: function (f) {
       this.grammarList = this.grammarList.filter((i) => i != f);
@@ -149,3 +186,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.grammarPoint {
+  color: darksalmon;
+}
+</style>
