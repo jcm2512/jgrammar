@@ -5,23 +5,23 @@
       v-for="(grammarListObj, index) in grammarList"
       :key="`grammarListObj-${index}`"
     >
-      {{ Object.keys(grammarListObj)[0] }}
       <a href="#" v-show="editMode" v-on:click="remove(grammarListObj)">[x]</a>
+      {{ Object.keys(grammarListObj)[0] }}
       <ul>
         <li
           v-for="(sentence, index) in Object.values(grammarListObj)[0]"
           :key="`sentence-${index}`"
         >
           <div>
+            <a
+              href="#"
+              v-show="editMode"
+              v-on:click="clear(grammarListObj, sentence)"
+              >[x]</a
+            >
             {{ sentence[0] }} <span class="grammarPoint">{{ sentence[1] }}</span
             >{{ sentence[2] }}
           </div>
-          <a
-            href="#"
-            v-show="editMode"
-            v-on:click="clear(grammarListObj, sentence)"
-            >[x]</a
-          >
         </li>
       </ul>
     </li>
@@ -37,29 +37,22 @@
     placeholder="Add Grammar"
     v-on:keyup.enter="addGrammar"
   />
-  <div>
-    <br /><button v-if="editMode" v-on:click="getGrammar(grammarList)">
-      Get Grammar Points
-    </button>
-  </div>
+ <br>
+ <br>
 
   <button v-on:click="toggleAllSentences">
     {{ showAll ? "Hide All Sentences" : "Show All Sentences" }}
   </button>
   <ul>
     <li
-      v-for="(sentence, index) in allSentences"
+      v-for="(sentence, index) in allSentences.all"
       v-show="showAll"
       :key="`s-${index}`"
     >
       <div>
-        <a
-          href="#"
-          v-show="editMode"
-          v-on:click="clear(grammarListObj, sentence)"
+        <a href="#" v-show="editMode" v-on:click="clear(allSentences, sentence)"
           >[x]</a
-        >
-        {{ sentence }}
+        >{{ sentence }}
       </div>
     </li>
   </ul>
@@ -74,7 +67,7 @@ export default {
       findMode: true,
       showAll: true,
       grammarList: [{ 恐らく: [] }, { に際して: [] }],
-      allSentences: [],
+      allSentences: { all: [] },
     };
   },
   methods: {
@@ -102,7 +95,7 @@ export default {
         this.grammarList.forEach((obj) => {
           if (Object.keys(obj)[0] == g) {
             this.updateSentence(Object.values(obj)[0], grammarObject.breakdown);
-            this.updateSentence(this.allSentences, grammarObject.sentence);
+            this.updateSentence(this.allSentences.all, grammarObject.sentence);
           }
         });
       });
@@ -139,7 +132,7 @@ export default {
         });
         if (result.length === grammar.length) {
           object.grammar.push(item);
-          object.sentence += s;
+          object.sentence = s;
           object.breakdown = part;
         }
       });
