@@ -1,16 +1,16 @@
 <template>
-  <Sentences/>
+  <!-- <Sentences/> -->
   <Cards/>
 </template>
 
 <script>
-import Sentences from './components/Sentences.vue'
+// import Sentences from './components/Sentences.vue'
 import Cards from './components/Cards.vue'
 
 export default {
   name: 'App',
   components: {
-    Sentences,
+    // Sentences,
     Cards
   }
 }
