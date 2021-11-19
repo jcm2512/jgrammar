@@ -1,17 +1,18 @@
 <template>
   <button v-on:click="toggleEditMode">{{ editMode ? "Done" : "Edit" }}</button>
   <ul>
-    <li v-for="(card, index) in cardList" :key="`card-${index}`">
-      {{ card.term }}, {{card.sentence}}
+    <li v-for="(card, i) in cardList" :key="`c-${i}`">
+      {{ card.term }}
+      <ul>
+        <li v-for="(sentence, i) in card.sentence" :key="`s-${i}`">
+          {{ card.sentence[i] }}
+        </li>
+      </ul>
     </li>
   </ul>
   <br /><br />
   <input v-if="editMode" placeholder="Add Card" v-on:keyup.enter="addCard" />
-  <input
-    v-if="findMode"
-    placeholder="Add Sentence"
-    v-on:keyup.enter="addSentence"
-  />
+  <input v-if="findMode" placeholder="Add Sentence" v-on:keyup.enter="addSentence" />
   <br />
   <br />
 </template>
@@ -37,33 +38,30 @@ export default {
       event.target.value = "";
     },
     addSentence: function (event) {
-      let sentence = event.target.value;
-      this.cardList.forEach(i => {
-        let found = sentence.search(i.term)
-        if (found > -1) i.sentence.push(sentence)
-        console.log(sentence, i)
+      let input = event.target.value
+      this.cardList.forEach((card) => {
+        if (input.search(card.term) > -1) { // look for matching term
+          let isUnique = true
+          // check if sentence already exists
+          card.sentence.forEach((existingSentence) => {
+            if (existingSentence == input) isUnique = false
+          });
+          // append sentence
+          if (isUnique) {
+            card.sentence.push(input)
+          }
+        } else {
+          this.nothingFound()
+        }
+        event.target.value = ""
       })
-
+      this.save();
     },
-    //  findGrammar: function (event) {
-    //    let sentence = event.target.value;
-    //    let grammarObject = this.searchGrammar(sentence);
-    //    console.log(grammarObject);
-    //    grammarObject.grammar.length < 1
-    //      ? "Nothing found"
-    //      : this.addSentence(grammarObject);
-    //    event.target.value = "";
-    //    this.save();
-    //  },
-    //  updateSentence: function (array, sentence) {
-    //    let isUnique = true;
-    //    array.forEach((s) => {
-    //      if (s === sentence) {
-    //        isUnique = false;
-    //      }
-    //    });
-    //    if (isUnique) array.push(sentence);
-    //  },
+    nothingFound: function () {
+      console.log("Nothing Found")
+    },
+    
+
     //  addSentence: function (grammarObject) {
     //    grammarObject.grammar.forEach((g) => {
     //      this.cardList.forEach((obj) => {
@@ -74,18 +72,8 @@ export default {
     //      });
     //    });
     //  },
-    //  getGrammar: function (array) {
-    //    let list = [];
-    //    array.forEach((obj) => list.push(Object.keys(obj)[0]));
-    //    return list;
-    //  },
-    //  addGrammar: function (event) {
-    //    this.cardList.push({
-    //      [event.target.value]: [],
-    //    });
-    //    event.target.value = "";
-    //    this.save();
-    //  },
+
+
     //  searchGrammar: function (s) {
     //    let object = {
     //      grammar: [],
