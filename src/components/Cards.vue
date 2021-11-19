@@ -60,7 +60,7 @@
 
 <script>
 export default {
-  name: "Sentences",
+  name: "Cards",
   data() {
     return {
       editMode: false,
@@ -150,19 +150,19 @@ export default {
       );
     },
     save: function () {
-      let data = JSON.stringify(this.grammarList);
-      let datatwo = JSON.stringify(this.allSentences);
-      localStorage.setItem("saved", data);
-      localStorage.setItem("savedtwo", datatwo);
+      let card_data = JSON.stringify(this.grammarList);
+      let card_datatwo = JSON.stringify(this.allSentences);
+      localStorage.setItem("card_saved", card_data);
+      localStorage.setItem("card_savedtwo", card_datatwo);
     },
     load: function () {
-      let data = localStorage.getItem("saved");
-      let datatwo = localStorage.getItem("savedtwo");
-      if (data) {
-        this.grammarList = JSON.parse(data);
+      let card_data = localStorage.getItem("card_saved");
+      let card_datatwo = localStorage.getItem("card_savedtwo");
+      if (card_data) {
+        this.grammarList = JSON.parse(card_data);
       }
-      if (datatwo) {
-        this.allSentences = JSON.parse(datatwo);
+      if (card_datatwo) {
+        this.allSentences = JSON.parse(card_datatwo);
       }
     },
     toggleEditMode: function () {
