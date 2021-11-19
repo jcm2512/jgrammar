@@ -2,7 +2,7 @@
   <button v-on:click="toggleEditMode">{{ editMode ? "Done" : "Edit" }}</button>
   <ul>
     <li v-for="(card, index) in cardList" :key="`card-${index}`">
-      {{ card.term }}
+      {{ card.term }}, {{card.sentence}}
     </li>
   </ul>
   <br /><br />
@@ -10,7 +10,7 @@
   <input
     v-if="findMode"
     placeholder="Add Sentence"
-    v-on:keyup.enter="addCard"
+    v-on:keyup.enter="addSentence"
   />
   <br />
   <br />
@@ -25,18 +25,26 @@ export default {
       findMode: true,
       showAll: true,
       cardList: [
-        { term: "hello", meaning: "", sentence: "" },
-        { term: "world", meaning: "", sentence: "" },
+        { term: "hello", meaning: "", sentence: [] },
+        { term: "world", meaning: "", sentence: [] },
       ],
     };
   },
   methods: {
     addCard: function (event) {
-      let card = { term: event.target.value, meaning: "", sentence: "" };
+      let card = { term: event.target.value, meaning: "", sentence: [] };
       this.cardList.push(card);
       event.target.value = "";
     },
+    addSentence: function (event) {
+      let sentence = event.target.value;
+      this.cardList.forEach(i => {
+        let found = sentence.search(i.term)
+        if (found > -1) i.sentence.push(sentence)
+        console.log(sentence, i)
+      })
 
+    },
     //  findGrammar: function (event) {
     //    let sentence = event.target.value;
     //    let grammarObject = this.searchGrammar(sentence);
