@@ -1,5 +1,6 @@
 <template>
   <button v-on:click="toggleEditMode">{{ editMode ? 'Done' : 'Edit' }}</button>
+  <button v-on:click="resetData" v-show="editMode">Reset</button>
   <ul>
     <li v-for="(card, i) in cardList" :key="`ct-${i}`">
       <a href="#" v-show="editMode" v-on:click="remove(card)">[x]</a>{{ card.term }}
@@ -65,24 +66,26 @@ export default {
         const searchTerm = input.search(card.term)
         if (searchTerm > -1) {
           let isUnique = true
-          this.cardList.forEach((existingSentence) => {
-            if (existingSentence == input) isUnique = false
+          card.sentences.forEach((existingSentence) => {
+            if (existingSentence.main == input) isUnique = false
+            console.log(existingSentence.main, isUnique)
           })
           if (isUnique) {
             card.sentences.push({
               main: input,
               loc: [searchTerm, searchTerm + card.term.length],
             })
+            let isSentenceUnique = true
+            this.sentenceList.forEach((sentence) => {
+              if (sentence == input) isSentenceUnique = false
+            })
+            if (isSentenceUnique) {
+              this.sentenceList.push(input)
+            }
           }
         }
       })
-      let isSentenceUnique = true
-      this.sentenceList.forEach((sentence) => {
-        if (sentence == input) isSentenceUnique = false
-      })
-      if (isSentenceUnique) {
-        this.sentenceList.push(input)
-      }
+
       event.target.value = ''
       this.save()
     },
@@ -122,7 +125,11 @@ export default {
     toggleEditMode: function () {
       this.editMode = !this.editMode
       this.findMode = !this.findMode
-      this.save()
+    },
+    resetData: function () {
+      localStorage.removeItem('card_saved')
+      localStorage.removeItem('sentence_saved')
+      location.reload()
     },
     //  toggleAllSentences: function () {
     //    this.showAll = !this.showAll;
