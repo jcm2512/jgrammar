@@ -1,42 +1,49 @@
 <template>
-  <button v-on:click="toggleEditMode">{{ editMode ? 'Done' : 'Edit' }}</button>
-  <button v-on:click="resetData" v-show="editMode">Reset</button>
-  <ul>
-    <li v-for="(card, i) in cardList" :key="`ct-${i}`">
-      <a href="#" v-show="editMode" v-on:click="remove(card)">[x]</a>{{ card.term }}
-      <ul>
-        <li v-for="(sentence, i) in card.sentences" :key="`cs-${i}`">
+  <v-btn color="primary" v-on:click="toggleEditMode">{{ editMode ? 'Done' : 'Edit' }}</v-btn>
+  <v-btn color="secondary" v-on:click="resetData" v-show="editMode">Reset</v-btn>
+  <v-list>
+    <v-list-item v-for="(card, i) in cardList" :key="`ct-${i}`">
+      <v-list-item-icon>
+        <a href="#" v-show="editMode" v-on:click="remove(card)">[x]</a>
+      </v-list-item-icon>
+
+      <v-list-item-title>{{ card.term }}</v-list-item-title>
+      <v-list-item-group>
+        <v-list-item v-for="(sentence, i) in card.sentences" :key="`cs-${i}`">
           <a
             href="#"
             v-show="editMode"
             v-on:click="card.sentences = clear(card.sentences, sentence)"
             >[x]</a
           >
-          <span>
-            {{ formatSentence(card.sentences[i]).pre }}
-          </span>
-          <span class="highlight">
-            {{ formatSentence(card.sentences[i]).term }}
-          </span>
-          <span>
-            {{ formatSentence(card.sentences[i]).post }}
-          </span>
-        </li>
-      </ul>
-    </li>
-  </ul>
+          <v-list-item-title>
+            <span>
+              {{ formatSentence(card.sentences[i]).pre }}
+            </span>
+            <span class="highlight">
+              {{ formatSentence(card.sentences[i]).term }}
+            </span>
+            <span>
+              {{ formatSentence(card.sentences[i]).post }}
+            </span>
+          </v-list-item-title>
+        </v-list-item>
+      </v-list-item-group>
+    </v-list-item>
+  </v-list>
   <br /><br />
-  <input v-if="editMode" placeholder="Add Card" v-on:keyup.enter="addCard" />
-  <input v-if="findMode" placeholder="Add Sentence" v-on:keyup.enter="addSentence" />
+  <v-text-field label="Add Card" v-if="editMode" v-on:keyup.enter="addCard"></v-text-field>
+  <v-text-field label="Add Sentence" v-if="findMode" v-on:keyup.enter="addSentence"></v-text-field>
   <br />
   <br />
-  <ul>
-    <li v-for="(sentence, i) in sentenceList" :key="`sl-${i}`">
+  <v-list>
+    <v-list-item v-for="(sentence, i) in sentenceList" :key="`sl-${i}`">
       <a href="#" v-show="editMode" v-on:click="sentenceList = clear(sentenceList, sentence)">
         [x]</a
-      >{{ sentence }}
-    </li>
-  </ul>
+      >
+      <v-list-item-title>{{ sentence }}</v-list-item-title>
+    </v-list-item>
+  </v-list>
 </template>
 
 <script>
