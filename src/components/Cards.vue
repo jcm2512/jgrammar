@@ -5,18 +5,21 @@
       <a href="#" v-show="editMode" v-on:click="remove(card)">[x]</a>
       {{ card.term }}
       <ul>
-        <li v-for="(sentence, i) in card.sentence" :key="`s-${i}`">
-          <a href="#" v-show="editMode" v-on:click="card.sentence = clear(card.sentence, sentence)">
+        <li v-for="(sentence, i) in card.sentences" :key="`s-${i}`">
+          <a
+            href="#"
+            v-show="editMode"
+            v-on:click="card.sentences = clear(card.sentences, sentence)">
             [x]
           </a>
           <span>
-            {{ formatSentence(card.term, card.sentence[i]).pre }}
+            {{ formatSentence(card.term, card.sentences[i]).pre }}
           </span>
           <span class="highlight">
-            {{ formatSentence(card.term, card.sentence[i]).term }}
+            {{ formatSentence(card.term, card.sentences[i]).term }}
           </span>
           <span>
-            {{ formatSentence(card.term, card.sentence[i]).post }}
+            {{ formatSentence(card.term, card.sentences[i]).post }}
           </span>
         </li>
       </ul>
@@ -38,14 +41,14 @@ export default {
       findMode: true,
       showAll: true,
       cardList: [
-        { term: 'hello', meaning: '', sentence: [] },
-        { term: 'world', meaning: '', sentence: [] },
+        { term: 'hello', meaning: '', sentences: [] },
+        { term: 'world', meaning: '', sentences: [] },
       ],
     }
   },
   methods: {
     addCard: function (event) {
-      let card = { term: event.target.value, meaning: '', sentence: [] }
+      let card = { term: event.target.value, meaning: '', sentences: [] }
       this.cardList.push(card)
       event.target.value = ''
     },
@@ -54,11 +57,11 @@ export default {
       this.cardList.forEach((card) => {
         if (input.search(card.term) > -1) {
           let isUnique = true
-          card.sentence.forEach((existingSentence) => {
+          card.sentences.forEach((existingSentence) => {
             if (existingSentence == input) isUnique = false
           })
           if (isUnique) {
-            card.sentence.push(input)
+            card.sentences.push(input)
           }
         }
         event.target.value = ''
