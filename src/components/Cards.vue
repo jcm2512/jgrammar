@@ -13,13 +13,13 @@
             [x]
           </a>
           <span>
-            {{ formatSentence(card.term, card.sentences[i]).pre }}
+            {{ formatSentence(card.sentences[i]).pre }}
           </span>
           <span class="highlight">
-            {{ formatSentence(card.term, card.sentences[i]).term }}
+            {{ formatSentence(card.sentences[i]).term }}
           </span>
           <span>
-            {{ formatSentence(card.term, card.sentences[i]).post }}
+            {{ formatSentence(card.sentences[i]).post }}
           </span>
         </li>
       </ul>
@@ -55,27 +55,25 @@ export default {
     addSentence: function (event) {
       let input = event.target.value
       this.cardList.forEach((card) => {
-        if (input.search(card.term) > -1) {
+        const searchTerm = input.search(card.term)
+        if (searchTerm > -1) {
           let isUnique = true
           card.sentences.forEach((existingSentence) => {
             if (existingSentence == input) isUnique = false
           })
           if (isUnique) {
-            card.sentences.push(input)
+            card.sentences.push([input, [searchTerm, searchTerm + card.term.length]])
           }
         }
         event.target.value = ''
       })
       this.save()
     },
-    formatSentence: function (term, s) {
-      let f = s.search(term)
-      if (f > -1) {
-        return {
-          pre: s.substring(0, f),
-          term: s.substring(f, f + term.length),
-          post: s.substring(f + term.length),
-        }
+    formatSentence: function (s) {
+      return {
+        pre: s[0].substring(0, s[1][0]),
+        term: s[0].substring(s[1][0], s[1][1]),
+        post: s[0].substring(s[1][1]),
       }
     },
     remove: function (f) {
