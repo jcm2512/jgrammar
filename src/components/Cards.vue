@@ -67,7 +67,6 @@ export default {
         event.target.value = ''
       })
       this.save()
-      console.log(this.formatSentence('this', 'what is this here?'))
     },
     formatSentence: function (term, s) {
       let f = s.search(term)
