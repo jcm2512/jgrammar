@@ -62,7 +62,10 @@ export default {
             if (existingSentence == input) isUnique = false
           })
           if (isUnique) {
-            card.sentences.push([input, [searchTerm, searchTerm + card.term.length]])
+            card.sentences.push({
+              main: input,
+              loc: [searchTerm, searchTerm + card.term.length],
+            })
           }
         }
         event.target.value = ''
@@ -71,9 +74,9 @@ export default {
     },
     formatSentence: function (s) {
       return {
-        pre: s[0].substring(0, s[1][0]),
-        term: s[0].substring(s[1][0], s[1][1]),
-        post: s[0].substring(s[1][1]),
+        pre: s.main.substring(0, s.loc[0]),
+        term: s.main.substring(s.loc[0], s.loc[1]),
+        post: s.main.substring(s.loc[1]),
       }
     },
     remove: function (f) {
