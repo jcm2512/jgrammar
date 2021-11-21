@@ -1,51 +1,102 @@
 <template>
-  <v-btn color="primary" v-on:click="toggleEditMode">{{ editMode ? 'Done' : 'Edit' }}</v-btn>
-  <v-btn color="secondary" v-on:click="resetData" v-show="editMode">Reset</v-btn>
-  <v-list>
-    <v-list-item v-for="(card, i) in cardList" :key="`ct-${i}`">
-      <v-list-item-icon>
-        <a href="#" v-show="editMode" v-on:click="remove(card)">[x]</a>
-      </v-list-item-icon>
+  <v-app id="Cards">
+    <v-app-bar id="app-bar">
+      <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
-      <v-list-item-title>{{ card.term }}</v-list-item-title>
-      <v-list-item-group>
-        <v-list-item v-for="(sentence, i) in card.sentences" :key="`cs-${i}`">
-          <a
-            href="#"
-            v-show="editMode"
-            v-on:click="card.sentences = clear(card.sentences, sentence)"
-            >[x]</a
+      <!-- <v-toolbar-title>Title</v-toolbar-title> -->
+      <v-text-field
+        hide-details
+        solo
+        class="input"
+        label="Add Card"
+        prepend-inner-icon="mdi-magnify"
+        v-if="editMode"
+        v-on:keyup.enter="addCard"></v-text-field>
+      <v-text-field
+        hide-details
+        solo
+        label="Add Sentence"
+        v-if="findMode"
+        v-on:keyup.enter="addSentence"></v-text-field>
+
+      <v-btn icon>
+        <v-icon>mdi-magnify</v-icon>
+      </v-btn>
+
+      <v-btn icon>
+        <v-icon>mdi-heart</v-icon>
+      </v-btn>
+
+      <v-btn icon>
+        <v-icon>mdi-dots-vertical</v-icon>
+      </v-btn>
+    </v-app-bar>
+
+    <v-btn color="primary" v-on:click="toggleEditMode">{{ editMode ? 'Done' : 'Edit' }}</v-btn>
+    <v-btn color="secondary" v-on:click="resetData" v-show="editMode">Reset</v-btn>
+
+    <!-- Cards -->
+    <v-container overflow="hidden" class="mx-auto" width="600">
+      <v-row dense>
+        <v-col v-for="(card, i) in cardList" :key="i" cols="12">
+          <v-card>
+            <div>
+              <v-card-title v-text="card.term" class="text-h5"></v-card-title>
+              <v-card-actions>
+                <v-btn href="#" v-show="editMode" v-on:click="remove(card)">remove</v-btn>
+              </v-card-actions>
+              <!--
+              <v-list-item-group>
+                <v-list-item v-for="(sentence, i) in card.sentences" :key="`cs-${i}`">
+                  <a
+                    href="#"
+                    v-show="editMode"
+                    v-on:click="card.sentences = clear(card.sentences, sentence)"
+                    >[x]</a
+                  >
+                  <v-list-item-title>
+                    <span>
+                      {{ formatSentence(card.sentences[i]).pre }}
+                    </span>
+                    <span class="highlight">
+                      {{ formatSentence(card.sentences[i]).term }}
+                    </span>
+                    <span>
+                      {{ formatSentence(card.sentences[i]).post }}
+                    </span>
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list-item-group>
+              -->
+            </div>
+          </v-card>
+        </v-col>
+      </v-row>
+      <!-- 
+      <br /><br />
+      <br />
+      <br />
+      <v-list>
+        <v-list-item v-for="(sentence, i) in sentenceList" :key="`sl-${i}`">
+          <a href="#" v-show="editMode" v-on:click="sentenceList = clear(sentenceList, sentence)">
+            [x]</a
           >
-          <v-list-item-title>
-            <span>
-              {{ formatSentence(card.sentences[i]).pre }}
-            </span>
-            <span class="highlight">
-              {{ formatSentence(card.sentences[i]).term }}
-            </span>
-            <span>
-              {{ formatSentence(card.sentences[i]).post }}
-            </span>
-          </v-list-item-title>
+          <v-list-item-title>{{ sentence }}</v-list-item-title>
         </v-list-item>
-      </v-list-item-group>
-    </v-list-item>
-  </v-list>
-  <br /><br />
-  <v-text-field label="Add Card" v-if="editMode" v-on:keyup.enter="addCard"></v-text-field>
-  <v-text-field label="Add Sentence" v-if="findMode" v-on:keyup.enter="addSentence"></v-text-field>
-  <br />
-  <br />
-  <v-list>
-    <v-list-item v-for="(sentence, i) in sentenceList" :key="`sl-${i}`">
-      <a href="#" v-show="editMode" v-on:click="sentenceList = clear(sentenceList, sentence)">
-        [x]</a
-      >
-      <v-list-item-title>{{ sentence }}</v-list-item-title>
-    </v-list-item>
-  </v-list>
+      </v-list>
+      -->
+    </v-container>
+  </v-app>
 </template>
 
+<style scoped>
+#Cards {
+  padding-top: 65px;
+}
+#app-bar {
+  padding: 0.2em;
+}
+</style>
 <script>
 export default {
   name: 'Cards',

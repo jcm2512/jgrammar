@@ -1,13 +1,9 @@
 <template>
-  <v-app>
-    <v-main>
-      <Cards />
-    </v-main>
-  </v-app>
+  <Cards />
 </template>
 
 <script>
-// import Sentences from './components/Sentences.vue'
+//import Sample from './components/vuetify-sample.vue'
 import Cards from './components/Cards.vue'
 export default {
   name: 'App',
@@ -15,20 +11,8 @@ export default {
     // Sentences,
     Cards,
   },
-  data: () => ({
-    //
-  }),
+  data: () => ({}),
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: left;
-  color: #2c3e50;
-  padding: 60px;
-  background-color: #121212;
-}
-</style>
+<style></style>
